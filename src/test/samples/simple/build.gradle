@@ -1,0 +1,23 @@
+plugins {
+    id("java")
+    id("io.vlingo.codegen")
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+dependencies {
+    implementation("io.vlingo:vlingo-actors:0.7.5")
+
+    testImplementation("junit:junit:4.11")
+}
+
+repositories {
+    mavenCentral()
+}
+
+generateActorProxies {
+    actorProtocols.set(["io.vlingo.gradle.actortest.Test1Protocol"])
+}
