@@ -9,12 +9,26 @@ import org.apache.commons.io.FileUtils
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
+import org.junit.runner.RunWith
+import org.junit.runners.Parameterized
 
 import static org.hamcrest.CoreMatchers.equalTo
 import static org.junit.Assert.assertThat
 
 
+@RunWith(Parameterized.class)
 class ActorProxyGeneratorPluginTest {
+
+    @Parameterized.Parameters(name = "Gradle {0}")
+    static List<String> getTestedGradleVersions() {
+        ["5.1", "5.0"]
+    }
+
+    private final String gradleVersion
+
+    ActorProxyGeneratorPluginTest(String gradleVersion) {
+        this.gradleVersion = gradleVersion
+    }
 
     @Rule
     public TemporaryFolder tmpDir = new TemporaryFolder()
@@ -58,6 +72,7 @@ class ActorProxyGeneratorPluginTest {
 
     private BuildResult build(String... arguments) {
         return GradleRunner.create()
+                .withGradleVersion(gradleVersion)
                 .withPluginClasspath()
                 .withProjectDir(root)
                 .withArguments(arguments)
