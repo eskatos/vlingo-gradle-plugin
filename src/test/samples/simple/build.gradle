@@ -19,5 +19,8 @@ repositories {
 }
 
 generateActorProxies {
-    actorProtocols.set(["io.vlingo.gradle.actortest.Test1Protocol"])
+    actorProtocols.set([
+            "io.vlingo.gradle.actortest.Test1Protocol",
+            "io.vlingo.gradle.actortest.Test2Protocol"
+    ])
 }
