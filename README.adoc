@@ -1,0 +1,18 @@
+= vlingo gradle plugin
+
+[CAUTION]
+WIP - NOT PUBLISHED
+
+```kotlin
+plugins {
+    id("java")
+    id("io.vlingo.codegen")
+}
+
+tasks.generateActorProxies {
+    actorProtocols.set([
+        "io.vlingo.gradle.actortest.Test1Protocol",
+        "io.vlingo.gradle.actortest.Test2Protocol"
+    ])
+}
+```
