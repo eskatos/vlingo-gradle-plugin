@@ -40,41 +40,51 @@ class ActorProxyGeneratorPluginTest {
     @Test
     void "simple sample"() {
 
-        FileUtils.copyDirectory(new File("src/test/samples/simple"), root)
-        new File(root, "settings.gradle").append("""
+        def locationA = new File(root, "locationA")
+        def locationB = new File(root, "locationB")
+
+        FileUtils.copyDirectory(new File("src/test/samples/simple"), locationA)
+        new File(locationA, "settings.gradle").append("""
 
             buildCache {
                 local {
-                    directory = file("build-cache-dir")
+                    directory = file("../build-cache-dir")
                 }
             }
 
         """.stripIndent())
+        FileUtils.copyDirectory(locationA, locationB)
 
-        build("build", "--build-cache").tap {
+        build(locationA, "build", "--build-cache").tap {
             assertThat(task(":generateActorProxies").outcome, equalTo(TaskOutcome.SUCCESS))
             assertThat(task(":compileActorProxiesJava").outcome, equalTo(TaskOutcome.SUCCESS))
             assertThat(task(":test").outcome, equalTo(TaskOutcome.SUCCESS))
         }
 
-        build("build", "--build-cache").tap {
+        build(locationA, "build", "--build-cache").tap {
             assertThat(task(":generateActorProxies").outcome, equalTo(TaskOutcome.UP_TO_DATE))
             assertThat(task(":compileActorProxiesJava").outcome, equalTo(TaskOutcome.UP_TO_DATE))
             assertThat(task(":test").outcome, equalTo(TaskOutcome.UP_TO_DATE))
         }
 
-        build("clean", "build", "--build-cache").tap {
+        build(locationA, "clean", "build", "--build-cache").tap {
+            assertThat(task(":generateActorProxies").outcome, equalTo(TaskOutcome.FROM_CACHE))
+            assertThat(task(":compileActorProxiesJava").outcome, equalTo(TaskOutcome.FROM_CACHE))
+            assertThat(task(":test").outcome, equalTo(TaskOutcome.FROM_CACHE))
+        }
+
+        build(locationB, "build", "--build-cache").tap {
             assertThat(task(":generateActorProxies").outcome, equalTo(TaskOutcome.FROM_CACHE))
             assertThat(task(":compileActorProxiesJava").outcome, equalTo(TaskOutcome.FROM_CACHE))
             assertThat(task(":test").outcome, equalTo(TaskOutcome.FROM_CACHE))
         }
     }
 
-    private BuildResult build(String... arguments) {
+    private BuildResult build(File projectDir, String... arguments) {
         return GradleRunner.create()
                 .withGradleVersion(gradleVersion)
                 .withPluginClasspath()
-                .withProjectDir(root)
+                .withProjectDir(projectDir)
                 .withArguments(arguments)
                 .build()
     }
