@@ -15,8 +15,6 @@ import org.gradle.workers.IsolationMode;
 import org.gradle.workers.WorkerExecutor;
 
 import javax.inject.Inject;
-import java.io.File;
-import java.io.IOException;
 import java.util.Set;
 
 
@@ -24,6 +22,7 @@ import java.util.Set;
 public class ActorProxyGeneratorTask extends DefaultTask {
 
     private final WorkerExecutor workerExecutor;
+    private final ConfigurableFileCollection classpath = getProject().files();
     private final ConfigurableFileCollection classesDirs = getProject().files();
     private final SetProperty<String> actorProtocols = getProject().getObjects().setProperty(String.class).empty();
     private final DirectoryProperty destinationDirectory = getProject().getObjects().directoryProperty();
@@ -31,6 +30,11 @@ public class ActorProxyGeneratorTask extends DefaultTask {
     @Inject
     public ActorProxyGeneratorTask(WorkerExecutor workerExecutor) {
         this.workerExecutor = workerExecutor;
+    }
+
+    @Classpath
+    public ConfigurableFileCollection getClasspath() {
+        return classpath;
     }
 
     @Classpath
@@ -51,13 +55,9 @@ public class ActorProxyGeneratorTask extends DefaultTask {
 
     @TaskAction
     @SuppressWarnings("unused")
-    public void generateActorProxies() throws IOException {
+    public void generateActorProxies() {
         Set<String> protocols = actorProtocols.get();
         if (!protocols.isEmpty()) {
-
-            Set<File> proxyGeneratorClasspath = getProject().getConfigurations().detachedConfiguration(
-                    getProject().getDependencies().create("io.vlingo:vlingo-actors:" + VLingoGradlePluginVersions.getDefaultVLingoVersion())
-            ).getFiles();
 
             ActorProxyGeneratorParameters proxyGeneratorParams = new ActorProxyGeneratorParameters(
                     classesDirs.getFiles(),
@@ -67,7 +67,7 @@ public class ActorProxyGeneratorTask extends DefaultTask {
 
             workerExecutor.submit(ActorProxyGeneratorRunnable.class, configuration -> {
                 configuration.setIsolationMode(IsolationMode.CLASSLOADER);
-                configuration.setClasspath(proxyGeneratorClasspath);
+                configuration.setClasspath(classpath.getFiles());
                 configuration.setParams(proxyGeneratorParams);
             });
 

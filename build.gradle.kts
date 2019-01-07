@@ -12,24 +12,13 @@ java {
     targetCompatibility = JavaVersion.VERSION_1_8
 }
 
-val defaultVLingoVersion = "0.7.5"
-
-val generatedResourcesDir = buildDir.resolve("generated-resources/versions/resources")
-val generateVersionsResource by tasks.registering(WriteProperties::class) {
-    property("default-vlingo-version", defaultVLingoVersion)
-    outputFile = generatedResourcesDir.resolve("io/vlingo/gradle/versions.properties")
-}
-sourceSets.main {
-    resources.srcDir(files(generatedResourcesDir).builtBy(generateVersionsResource))
-}
-
 repositories {
     mavenCentral()
 }
 
 dependencies {
 
-    compileOnly("io.vlingo:vlingo-actors:$defaultVLingoVersion")
+    compileOnly("io.vlingo:vlingo-actors:0.7.5")
 
     implementation(gradleApi())
 

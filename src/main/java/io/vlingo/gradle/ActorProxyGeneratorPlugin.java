@@ -2,9 +2,9 @@ package io.vlingo.gradle;
 
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.gradle.api.Task;
 import org.gradle.api.file.Directory;
 import org.gradle.api.provider.Provider;
-import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.SourceSetContainer;
 import org.gradle.api.tasks.TaskProvider;
 import org.gradle.api.tasks.compile.JavaCompile;
@@ -26,8 +26,10 @@ public class ActorProxyGeneratorPlugin implements Plugin<Project> {
 
                 TaskProvider<ActorProxyGeneratorTask> codeGenTask = project.getTasks().register(codeGenTaskName, ActorProxyGeneratorTask.class, task -> {
                     // TODO this won't scale with multiple jvm languages
-                    task.mustRunAfter(project.getTasks().named(inputSourceSet.getCompileJavaTaskName()));
-                    task.getClassesDirs().from(inputSourceSet.getOutput().getClassesDirs().getFiles());
+                    TaskProvider<Task> compileJava = project.getTasks().named(inputSourceSet.getCompileJavaTaskName());
+                    task.getClasspath().from(inputSourceSet.getCompileClasspath());
+                    task.getClasspath().from(compileJava);
+                    task.getClassesDirs().from(compileJava);
                     task.getDestinationDirectory().set(codeGenDestDir);
                 });
 
