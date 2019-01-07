@@ -1,60 +1,78 @@
 package io.vlingo.gradle;
 
-import io.vlingo.actors.Properties;
-import io.vlingo.actors.ProxyGenerator;
-
 import org.gradle.api.DefaultTask;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.provider.SetProperty;
+import org.gradle.api.tasks.CacheableTask;
 import org.gradle.api.tasks.Classpath;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.OutputDirectory;
+import org.gradle.api.tasks.PathSensitive;
+import org.gradle.api.tasks.PathSensitivity;
 import org.gradle.api.tasks.TaskAction;
+import org.gradle.workers.IsolationMode;
+import org.gradle.workers.WorkerExecutor;
 
+import javax.inject.Inject;
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Comparator;
+import java.io.IOException;
 import java.util.Set;
 
 
-// TODO isolate using the Gradle Worker API
+@CacheableTask
 public class ActorProxyGeneratorTask extends DefaultTask {
 
+    private final WorkerExecutor workerExecutor;
+    private final ConfigurableFileCollection classesDirs = getProject().files();
+    private final SetProperty<String> actorProtocols = getProject().getObjects().setProperty(String.class).empty();
+    private final DirectoryProperty destinationDirectory = getProject().getObjects().directoryProperty();
+
+    @Inject
+    public ActorProxyGeneratorTask(WorkerExecutor workerExecutor) {
+        this.workerExecutor = workerExecutor;
+    }
+
     @Classpath
-    public final ConfigurableFileCollection classesDirs = getProject().files();
+    public ConfigurableFileCollection getClassesDirs() {
+        return classesDirs;
+    }
 
     @Input
-    public final SetProperty<String> actorProtocols = getProject().getObjects().setProperty(String.class).empty();
+    public SetProperty<String> getActorProtocols() {
+        return actorProtocols;
+    }
 
     @OutputDirectory
-    public final DirectoryProperty destinationDirectory = getProject().getObjects().directoryProperty();
+    @PathSensitive(PathSensitivity.RELATIVE)
+    public DirectoryProperty getDestinationDirectory() {
+        return destinationDirectory;
+    }
 
     @TaskAction
-    public void generateActorProxies() throws Exception {
+    @SuppressWarnings("unused")
+    public void generateActorProxies() throws IOException {
         Set<String> protocols = actorProtocols.get();
         if (!protocols.isEmpty()) {
 
-            // TODO this won't scale with multiple jvm languages
-            File classesDir = classesDirs.getSingleFile();
-            assert classesDir.isDirectory();
+            Set<File> proxyGeneratorClasspath = getProject().getConfigurations().detachedConfiguration(
+                    getProject().getDependencies().create("io.vlingo:vlingo-actors:" + VLingoGradlePluginVersions.getDefaultVLingoVersion())
+            ).getFiles();
 
-            File destinationDir = destinationDirectory.getAsFile().get();
-            if (destinationDir.exists()) {
-                Files.walk(destinationDir.toPath()).sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
-            }
-            destinationDir.mkdirs();
+            ActorProxyGeneratorParameters proxyGeneratorParams = new ActorProxyGeneratorParameters(
+                    classesDirs.getFiles(),
+                    protocols,
+                    destinationDirectory.getAsFile().get()
+            );
 
-            // TODO this won't play well with concurrent task execution
-            Properties.properties.setProperty("proxy.generated.classes.main", classesDir.getCanonicalPath() + "/");
-            Properties.properties.setProperty("proxy.generated.sources.main", destinationDir.getCanonicalPath() + "/");
+            workerExecutor.submit(ActorProxyGeneratorRunnable.class, configuration -> {
+                configuration.setIsolationMode(IsolationMode.CLASSLOADER);
+                configuration.setClasspath(proxyGeneratorClasspath);
+                configuration.setParams(proxyGeneratorParams);
+            });
 
-            try (ProxyGenerator generator = ProxyGenerator.forMain(true)) {
-                for (String protocol : protocols) {
-                    generator.generateFor(protocol);
-                }
-            }
+        } else {
+            setDidWork(false);
         }
     }
 }

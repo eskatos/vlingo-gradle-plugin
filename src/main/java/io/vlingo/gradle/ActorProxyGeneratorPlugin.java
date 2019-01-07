@@ -11,6 +11,8 @@ import org.gradle.api.tasks.compile.JavaCompile;
 
 import java.util.Collections;
 
+
+@SuppressWarnings("unused")
 public class ActorProxyGeneratorPlugin implements Plugin<Project> {
 
     @Override
@@ -25,8 +27,8 @@ public class ActorProxyGeneratorPlugin implements Plugin<Project> {
             TaskProvider<ActorProxyGeneratorTask> codeGenTask = project.getTasks().register(codeGenTaskName, ActorProxyGeneratorTask.class, task -> {
                 // TODO this won't scale with multiple jvm languages
                 task.mustRunAfter(project.getTasks().named(inputSourceSet.getCompileJavaTaskName()));
-                task.classesDirs.from(inputSourceSet.getOutput().getClassesDirs().getFiles());
-                task.destinationDirectory.set(codeGenDestDir);
+                task.getClassesDirs().from(inputSourceSet.getOutput().getClassesDirs().getFiles());
+                task.getDestinationDirectory().set(codeGenDestDir);
             });
 
             String compileTaskName = inputSourceSet.getTaskName("compile", "actorProxiesJava");
