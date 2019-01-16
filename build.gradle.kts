@@ -1,15 +1,12 @@
 plugins {
-    id("java")
-    id("groovy")
-    id("java-gradle-plugin")
+    `kotlin-dsl`
 }
 
 group = "io.vlingo"
 version = "0.7.8"
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+kotlinDslPluginOptions {
+    experimentalWarning.set(false)
 }
 
 repositories {
@@ -25,15 +22,6 @@ dependencies {
     testImplementation(gradleTestKit())
     testImplementation("junit:junit:4.12")
     testImplementation("org.apache.commons:commons-io:1.3.2")
-}
-
-gradlePlugin {
-    plugins {
-        register("vlingo-codegen") {
-            id = "io.vlingo.codegen"
-            implementationClass = "io.vlingo.gradle.ActorProxyGeneratorPlugin"
-        }
-    }
 }
 
 tasks.test {

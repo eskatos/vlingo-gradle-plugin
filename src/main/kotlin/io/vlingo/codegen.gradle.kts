@@ -1,0 +1,45 @@
+/**
+ * io.vlingo.codegen Gradle Plugin.
+ *
+ * Reacts to the `java-base` plugin and, for each source set,
+ * registers a task that depends on the source set's classes and generates the actor proxies java source,
+ * and another task to compile them to classes,
+ * adding the result to the source set output.
+ *
+ * TODO review wiring logic
+ * as it won't scale with multiple jvm languages
+ * and feels hackish
+ * any better way to do this?
+ */
+package io.vlingo
+
+import io.vlingo.gradle.ActorProxyGeneratorTask
+
+plugins.withType<JavaBasePlugin> {
+
+    the<SourceSetContainer>().configureEach {
+
+        val codeGenTaskName = getTaskName("generate", "actorProxies")
+        val codeGenDestDir = layout.buildDirectory.dir("generated-sources/$codeGenTaskName/java/")
+
+        val javaCompileTask = tasks.named(compileJavaTaskName)
+        val codeGenTask = tasks.register<ActorProxyGeneratorTask>(codeGenTaskName) {
+            classpath.from(compileClasspath)
+            classpath.from(javaCompileTask)
+            classesDirs.from(javaCompileTask)
+            destinationDirectory.set(codeGenDestDir)
+        }
+
+        val compileTaskName = getTaskName("compile", "actorProxiesJava")
+        val compileDestDir = layout.buildDirectory.dir("classes/$codeGenTaskName/java/")
+
+        val compileTask = tasks.register<JavaCompile>(compileTaskName) {
+            dependsOn(codeGenTask)
+            setSource(codeGenDestDir)
+            classpath = files(compileClasspath, provider { output.classesDirs.files })
+            setDestinationDir(compileDestDir.map { it.asFile })
+        }
+
+        output.dir(compileDestDir, "builtBy" to compileTask)
+    }
+}
