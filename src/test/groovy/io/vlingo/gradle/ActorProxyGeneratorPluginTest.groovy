@@ -39,7 +39,7 @@ class ActorProxyGeneratorPluginTest {
     }
 
     @Test
-    void "incremental build and cacheability "() {
+    void "success, up-to-date and from-cache "() {
 
         def locationA = new File(root, "locationA")
         def locationB = new File(root, "locationB")
@@ -82,10 +82,8 @@ class ActorProxyGeneratorPluginTest {
     }
 
     @Test
-    @Ignore("ProxyGenerator can't load TestProtocol1 when loading TestProtocol2")
-    // Requires passing a complete classpath to the proxy generator because of inter-protocol dependencies
-    // TODO Report to vlingo
-    void "multiple source sets "() {
+    @Ignore("https://github.com/vlingo/vlingo-actors/issues/36")
+    void "test actor depending on main actor "() {
 
         FileUtils.copyDirectory(new File("src/test/samples/simple"), root)
 
