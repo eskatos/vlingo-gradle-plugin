@@ -22,12 +22,17 @@ plugins.withType<JavaBasePlugin> {
         val codeGenTaskName = getTaskName("generate", "actorProxies")
         val codeGenDestDir = layout.buildDirectory.dir("generated-sources/$codeGenTaskName/java/")
 
-        val javaCompileTask = tasks.named(compileJavaTaskName)
         val codeGenTask = tasks.register<ActorProxyGeneratorTask>(codeGenTaskName) {
             classpath.from(compileClasspath)
-            classpath.from(javaCompileTask)
-            classesDirs.from(javaCompileTask)
             destinationDirectory.set(codeGenDestDir)
+        }
+
+        listOf("java", "groovy", "scala", "kotlin").forEach { language ->
+            plugins.withId(language) {
+                codeGenTask {
+                    classpath.from(Callable { tasks.named(getCompileTaskName(language)) })
+                }
+            }
         }
 
         val compileTaskName = getTaskName("compile", "actorProxiesJava")

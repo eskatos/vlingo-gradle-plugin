@@ -17,7 +17,7 @@ public class Test2ProtocolTest {
 
     @Test
     public void testDoOneThing() {
-        final TestActor<Test2Protocol> test2 = testWorld.actorFor(new Definition(Test2ProtocolActor.class, Collections.emptyList()), Test2Protocol.class);
+        final TestActor<Test2Protocol> test2 = testWorld.actorFor(Test2Protocol.class, new Definition(Test2ProtocolActor.class, Collections.emptyList()));
 
         test2.actor().doOneThing();
         assertEquals("doOneThing", Test2ProtocolActor.doOneThing);
@@ -25,7 +25,7 @@ public class Test2ProtocolTest {
 
     @Test
     public void testDoAnotherThingUsing() {
-        final TestActor<Test2Protocol> test2 = testWorld.actorFor(new Definition(Test2ProtocolActor.class, Collections.emptyList()), Test2Protocol.class);
+        final TestActor<Test2Protocol> test2 = testWorld.actorFor(Test2Protocol.class, new Definition(Test2ProtocolActor.class, Collections.emptyList()));
 
         test2.actor().doAnotherThingUsing("hello", 1);
         assertEquals("doAnotherThingUsing: hello1", Test2ProtocolActor.doAnotherThingUsing);
@@ -33,8 +33,8 @@ public class Test2ProtocolTest {
 
     @Test
     public void testSomethingRatherWonderful() {
-        final TestActor<Test1Protocol> test1 = testWorld.actorFor(new Definition(Test1ProtocolActor.class, Collections.emptyList()), Test1Protocol.class);
-        final TestActor<Test2Protocol> test2 = testWorld.actorFor(new Definition(Test2ProtocolActor.class, Collections.emptyList()), Test2Protocol.class);
+        final TestActor<Test1Protocol> test1 = testWorld.actorFor(Test1Protocol.class, new Definition(Test1ProtocolActor.class, Collections.emptyList()));
+        final TestActor<Test2Protocol> test2 = testWorld.actorFor(Test2Protocol.class, new Definition(Test2ProtocolActor.class, Collections.emptyList()));
 
         test2.actor().somethingRatherWonderful(test1.actor());
         assertEquals("somethingRatherWonderful: 1testingonetwothree", Test2ProtocolActor.somethingRatherWonderful);

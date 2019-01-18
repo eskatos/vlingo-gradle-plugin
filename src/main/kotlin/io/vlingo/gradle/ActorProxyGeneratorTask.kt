@@ -27,9 +27,6 @@ open class ActorProxyGeneratorTask @Inject constructor(
     @Classpath
     val classpath = project.files()
 
-    @Classpath
-    val classesDirs = project.files()
-
     @Input
     val actorProtocols = project.objects.setProperty(String::class.java).empty()
 
@@ -44,7 +41,7 @@ open class ActorProxyGeneratorTask @Inject constructor(
         if (protocols.isNotEmpty()) {
 
             val spec = ActorProxyGeneratorSpec(
-                    classesDirs.files,
+                    classpath.files,
                     protocols,
                     destinationDirectory.asFile.get()
             )

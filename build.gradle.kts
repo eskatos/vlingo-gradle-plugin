@@ -3,7 +3,7 @@ plugins {
 }
 
 group = "io.vlingo"
-version = "0.7.8"
+version = "0"
 
 kotlinDslPluginOptions {
     experimentalWarning.set(false)
@@ -15,7 +15,8 @@ repositories {
 
 dependencies {
 
-    compileOnly("io.vlingo:vlingo-actors:0.7.5")
+    compileOnly("io.vlingo:vlingo-actors:0.7.9")
+    compileOnly("io.vlingo:vlingo-common:0.7.9")
 
     implementation(gradleApi())
 

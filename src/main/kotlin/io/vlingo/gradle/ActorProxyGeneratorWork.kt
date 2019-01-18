@@ -1,7 +1,8 @@
 package io.vlingo.gradle
 
-import io.vlingo.actors.Properties
+import io.vlingo.actors.Logger
 import io.vlingo.actors.ProxyGenerator
+import io.vlingo.common.compiler.DynaType
 
 import org.gradle.api.GradleException
 
@@ -18,21 +19,11 @@ class ActorProxyGeneratorWork @Inject constructor(
 
     override fun run(): Unit =
             try {
-                // TODO this won't scale with multiple jvm languages
-                val classesDir = spec.classesDirs.single()
-                assert(classesDir.isDirectory)
-
                 spec.destinationDir.apply {
                     takeIf { it.exists() }?.deleteRecursively()
                     mkdirs()
                 }
-
-                Properties.properties.apply {
-                    setProperty("proxy.generated.classes.main", "${classesDir.canonicalPath}/")
-                    setProperty("proxy.generated.sources.main", "${spec.destinationDir.canonicalPath}/")
-                }
-
-                ProxyGenerator.forMain(true).use { generator ->
+                ProxyGenerator.forClasspath(spec.classPath.toList(), spec.destinationDir, DynaType.Main, true, WorkLogger).use { generator ->
                     spec.actorProtocols.forEach { protocol ->
                         generator.generateFor(protocol)
                     }
@@ -40,4 +31,29 @@ class ActorProxyGeneratorWork @Inject constructor(
             } catch (ex: Exception) {
                 throw GradleException("vlingo actor proxies generation failed", ex)
             }
+
+    object WorkLogger : Logger {
+
+        private
+        var enabled = true
+
+        override fun name(): String =
+                "actor-proxy-generator-work"
+
+        override fun close() {
+            enabled = false
+        }
+
+        override fun isEnabled(): Boolean =
+                enabled
+
+        override fun log(message: String) {
+            println(message)
+        }
+
+        override fun log(message: String, throwable: Throwable) {
+            log(message)
+            throwable.printStackTrace(System.out)
+        }
+    }
 }

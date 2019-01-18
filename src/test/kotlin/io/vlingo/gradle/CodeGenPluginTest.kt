@@ -6,7 +6,6 @@ import org.gradle.testkit.runner.TaskOutcome
 
 import org.hamcrest.CoreMatchers.equalTo
 import org.junit.Assert.assertThat
-import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
@@ -59,25 +58,25 @@ class CodeGenPluginTest(
         """.trimIndent())
         locationA.copyRecursively(locationB)
 
-        build(locationA, "build", "--build-cache").apply {
+        build(locationA, "build", "--build-cache", "-s").apply {
             assertThat(task(":generateActorProxies")!!.outcome, equalTo(TaskOutcome.SUCCESS))
             assertThat(task(":compileActorProxiesJava")!!.outcome, equalTo(TaskOutcome.SUCCESS))
             assertThat(task(":test")!!.outcome, equalTo(TaskOutcome.SUCCESS))
         }
 
-        build(locationA, "build", "--build-cache").apply {
+        build(locationA, "build", "--build-cache", "-s").apply {
             assertThat(task(":generateActorProxies")!!.outcome, equalTo(TaskOutcome.UP_TO_DATE))
             assertThat(task(":compileActorProxiesJava")!!.outcome, equalTo(TaskOutcome.UP_TO_DATE))
             assertThat(task(":test")!!.outcome, equalTo(TaskOutcome.UP_TO_DATE))
         }
 
-        build(locationA, "clean", "build", "--build-cache").apply {
+        build(locationA, "clean", "build", "--build-cache", "-s").apply {
             assertThat(task(":generateActorProxies")!!.outcome, equalTo(TaskOutcome.FROM_CACHE))
             assertThat(task(":compileActorProxiesJava")!!.outcome, equalTo(TaskOutcome.FROM_CACHE))
             assertThat(task(":test")!!.outcome, equalTo(TaskOutcome.FROM_CACHE))
         }
 
-        build(locationB, "build", "--build-cache").apply {
+        build(locationB, "build", "--build-cache", "-s").apply {
             assertThat(task(":generateActorProxies")!!.outcome, equalTo(TaskOutcome.FROM_CACHE))
             assertThat(task(":compileActorProxiesJava")!!.outcome, equalTo(TaskOutcome.FROM_CACHE))
             assertThat(task(":test")!!.outcome, equalTo(TaskOutcome.FROM_CACHE))
@@ -85,7 +84,6 @@ class CodeGenPluginTest(
     }
 
     @Test
-    @Ignore("https://github.com/vlingo/vlingo-actors/issues/36")
     fun `test actor depending on main type `() {
 
         copySampleTo("simple", root)

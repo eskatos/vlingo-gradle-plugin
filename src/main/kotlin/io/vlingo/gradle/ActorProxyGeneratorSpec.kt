@@ -6,7 +6,7 @@ import java.io.Serializable
 
 internal
 data class ActorProxyGeneratorSpec(
-        val classesDirs: Set<File>,
+        val classPath: Set<File>,
         val actorProtocols: Set<String>,
         val destinationDir: File
 ) : Serializable

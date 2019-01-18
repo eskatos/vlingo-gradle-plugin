@@ -18,7 +18,7 @@ public class Test1ProtocolTest {
 
     @Test
     public void testProtocolProxy() {
-        final TestActor<Test1Protocol> test1 = testWorld.actorFor(new Definition(Test1ProtocolActor.class, Collections.emptyList()), Test1Protocol.class);
+        final TestActor<Test1Protocol> test1 = testWorld.actorFor(Test1Protocol.class, new Definition(Test1ProtocolActor.class, Collections.emptyList()));
 
         test1.actor().doSomethingElseWith(1);
         assertEquals(1, Test1ProtocolActor.doSomethingElseWithValue);
