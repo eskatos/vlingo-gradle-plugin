@@ -1,14 +1,10 @@
 package io.vlingo.gradle
 
-import org.gradle.testkit.runner.BuildResult
-import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.TaskOutcome
 
 import org.hamcrest.CoreMatchers.equalTo
 import org.junit.Assert.assertThat
-import org.junit.Rule
 import org.junit.Test
-import org.junit.rules.TemporaryFolder
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 
@@ -16,29 +12,13 @@ import java.io.File
 
 
 @RunWith(Parameterized::class)
-class CodeGenPluginTest(
-
-        private
-        val gradleVersion: String
-
-) {
+class CodeGenPluginTest(gradleVersion: String) : AbstractTestKitTest(gradleVersion) {
 
     companion object {
         @JvmStatic
         @Parameterized.Parameters(name = "Gradle {0}")
-        fun getTestedGradleVersions() = listOf(
-                "5.1",
-                "5.0"
-        )
+        fun getTestedGradleVersions() = supportedGradleVersions
     }
-
-    @Rule
-    @JvmField
-    val tmpDir = TemporaryFolder()
-
-    private
-    val root: File
-        get() = tmpDir.root
 
     @Test
     fun `success, up-to-date and from-cache `() {
@@ -118,17 +98,4 @@ class CodeGenPluginTest(
     private
     fun copySampleTo(name: String, target: File) =
             File("src/test/samples/$name").copyRecursively(target)
-
-    private
-    fun build(vararg arguments: String): BuildResult =
-            build(root, *arguments);
-
-    private
-    fun build(projectDir: File, vararg arguments: String): BuildResult =
-            GradleRunner.create()
-                    .withGradleVersion(gradleVersion)
-                    .withPluginClasspath()
-                    .withProjectDir(projectDir)
-                    .withArguments(*arguments)
-                    .build()
 }
