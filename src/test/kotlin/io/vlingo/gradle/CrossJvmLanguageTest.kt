@@ -69,7 +69,7 @@ class CrossJvmLanguageTest(private val parameters: P) : AbstractTestKitTest(para
             }
 
             dependencies {
-                implementation("io.vlingo:vlingo-actors:0.7.9")
+                implementation("io.vlingo:vlingo-actors:0.8.0")
                 testImplementation("junit:junit:4.11")
 
                 ${parameters.dependencies}

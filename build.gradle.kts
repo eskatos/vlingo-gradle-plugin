@@ -18,8 +18,8 @@ repositories {
 
 dependencies {
 
-    compileOnly("io.vlingo:vlingo-actors:0.7.9")
-    compileOnly("io.vlingo:vlingo-common:0.7.9")
+    compileOnly("io.vlingo:vlingo-actors:0.8.0")
+    compileOnly("io.vlingo:vlingo-common:0.8.0")
 
     implementation(gradleApi())
 
