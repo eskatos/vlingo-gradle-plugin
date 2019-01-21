@@ -1,10 +1,8 @@
 package io.vlingo.gradle
 
-import org.gradle.api.DefaultTask
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Project
 import org.gradle.api.Task
-import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.plugins.JavaPluginConvention
 import org.gradle.api.tasks.SourceSet
 import org.gradle.api.tasks.TaskContainer
@@ -36,7 +34,7 @@ val hasConfigurationAvoidanceSupport =
         GradleVersion.current() >= v4_9
 
 
-private
+internal
 val hasObjectFactoryPropertyFactories =
         GradleVersion.current() >= v5_0
 
@@ -44,14 +42,6 @@ val hasObjectFactoryPropertyFactories =
 private
 val hasSourceSetContainerExtension =
         GradleVersion.current() >= v4_10
-
-
-abstract class DefaultTaskCompatible internal constructor() : DefaultTask() {
-
-    fun directoryPropertyCompatible(): DirectoryProperty =
-            if (hasObjectFactoryPropertyFactories) project.objects.directoryProperty()
-            else newOutputDirectory()
-}
 
 
 internal

@@ -1,5 +1,7 @@
 package io.vlingo.gradle
 
+import org.gradle.api.DefaultTask
+import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.Classpath
 import org.gradle.api.tasks.Input
@@ -21,7 +23,7 @@ open class ActorProxyGeneratorTask @Inject constructor(
         private
         val workerExecutor: WorkerExecutor
 
-) : DefaultTaskCompatible() {
+) : DefaultTask() {
 
     @Classpath
     val classpath = project.files()
@@ -56,4 +58,9 @@ open class ActorProxyGeneratorTask @Inject constructor(
             didWork = false
         }
     }
+
+    private
+    fun directoryPropertyCompatible(): DirectoryProperty =
+            if (hasObjectFactoryPropertyFactories) project.objects.directoryProperty()
+            else newOutputDirectory()
 }
