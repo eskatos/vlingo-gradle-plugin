@@ -1,5 +1,7 @@
 = vlingo gradle plugin
 
+Gradle plugin supporting the vlingo platform.
+
 [CAUTION]
 WIP - NOT PUBLISHED
 
@@ -16,3 +18,11 @@ tasks.generateActorProxies {
     ])
 }
 ```
+== Compatibility
+
+The plugin requires Java 8 or greater and Gradle 4.7 or greater or Gradle 5.x.
+
+=== Plugin compatibility history
+
+    Plugin version | Minimum | Maximum Gradle version
+             0.1.0 |    4.7  | 5.x
