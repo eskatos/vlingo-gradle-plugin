@@ -3,11 +3,17 @@
 Gradle plugin supporting the vlingo platform.
 
 [CAUTION]
-WIP - NOT PUBLISHED
+====
+WORK IN PROGRESS
+
+PLUGIN IS NOT PUBLISHED
+
+PLUGIN DEPENDS ON UNPUBLISHED vlingo ARTIFACTS
+====
 
 ```kotlin
 plugins {
-    id("java")
+    id("java") // or groovy, scala, kotlin
     id("io.vlingo.codegen")
 }
 
@@ -18,6 +24,7 @@ tasks.generateActorProxies {
     ])
 }
 ```
+
 == Compatibility
 
 The plugin requires Java 8 or greater and Gradle 4.7 or greater or Gradle 5.x.
