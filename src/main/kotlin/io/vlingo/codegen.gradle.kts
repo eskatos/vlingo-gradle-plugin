@@ -13,11 +13,11 @@
  */
 package io.vlingo
 
-import io.vlingo.gradle.ActorProxyGeneratorTask
+import io.vlingo.gradle.*
 
 plugins.withType<JavaBasePlugin> {
 
-    the<SourceSetContainer>().configureEach {
+    sourceSets.configureEach {
 
         val codeGenTaskName = getTaskName("generate", "actorProxies")
         val codeGenDestDir = layout.buildDirectory.dir("generated-sources/$codeGenTaskName/java/")
@@ -29,7 +29,7 @@ plugins.withType<JavaBasePlugin> {
 
         listOf("java", "groovy", "scala", "kotlin").forEach { language ->
             plugins.withId(language) {
-                codeGenTask {
+                codeGenTask.configure {
                     classpath.from(Callable { tasks.named(getCompileTaskName(language)) })
                 }
             }
@@ -48,3 +48,7 @@ plugins.withType<JavaBasePlugin> {
         output.dir(compileDestDir, "builtBy" to compileTask)
     }
 }
+
+val Project.sourceSets: NamedDomainObjectContainer<SourceSet>
+    get() = if (isGradleFourDotTenOrGreater) the()
+    else the<JavaPluginConvention>().sourceSets

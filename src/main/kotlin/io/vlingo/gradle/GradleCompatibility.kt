@@ -4,12 +4,18 @@ import org.gradle.util.GradleVersion
 
 
 private
-val gradleFiveDotZero = GradleVersion.version("5.0")
-
-
-private
-val currentGradleVersion = GradleVersion.current()
+object GradleVersions {
+    val current = GradleVersion.current()
+    val v5_0 = GradleVersion.version("5.0")
+    val v4_10 = GradleVersion.version("4.10")
+}
 
 
 internal
-val isGradleFiveDotZeroOrGreater = currentGradleVersion >= gradleFiveDotZero
+val isGradleFiveDotZeroOrGreater =
+        GradleVersions.current >= GradleVersions.v5_0
+
+
+internal
+val isGradleFourDotTenOrGreater =
+        GradleVersions.current >= GradleVersions.v4_10
