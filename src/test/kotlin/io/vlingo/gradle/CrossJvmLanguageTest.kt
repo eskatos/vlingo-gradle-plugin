@@ -128,30 +128,6 @@ class CrossJvmLanguageTest(private val parameters: P) : AbstractTestKitTest(para
     }
 
     private
-    val templatesRoot =
-        File("src/test/resources/protocols")
-
-    private
-    fun copyActorProtocolsMainTo(lang: Lang, projectDir: File) =
-        templatesRoot.resolve("main/${lang.dirName}").copyRecursively(
-            projectDir.resolve("src/main/${lang.dirName}").also(File::mkdirs)
-        )
-
-    private
-    fun copyActorProtocolsTestTo(lang: Lang, projectDir: File) =
-        projectDir.resolve("src/test").let { srcTest ->
-            listOf(lang.dirName, "resources").forEach { subDir ->
-                templatesRoot.resolve("test/$subDir").copyRecursively(
-                    srcTest.resolve(subDir).also(File::mkdirs)
-                )
-            }
-        }
-
-    private
-    val Lang.dirName: String
-        get() = name.toLowerCase()
-
-    private
     val Lang.pluginRequest: String
         get() =
             if (this == Lang.KOTLIN) """id("org.jetbrains.kotlin.jvm") version "1.3.11""""

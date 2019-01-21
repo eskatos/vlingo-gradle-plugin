@@ -53,3 +53,9 @@ plugins.withType<JavaBasePlugin> {
         output.dir(compileDestDir, "builtBy" to compileTask)
     }
 }
+
+listOf("com.android.application", "com.android.library", "com.android.test").forEach { android ->
+    plugins.withId(android) {
+        throw GradleException("io.vlingo.codegen doesn't support Android projects")
+    }
+}

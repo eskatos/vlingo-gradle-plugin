@@ -30,6 +30,14 @@ abstract class AbstractTestKitTest(private val gradleVersion: String) {
     open fun build(projectDir: File, vararg arguments: String): BuildResult =
         runnerFor(projectDir, *arguments).build().also { println(it.output) }
 
+    protected
+    fun buildAndFail(vararg arguments: String): BuildResult =
+        buildAndFail(root, *arguments)
+
+    protected
+    fun buildAndFail(projectDir: File, vararg arguments: String): BuildResult =
+        runnerFor(projectDir, *arguments).buildAndFail().also { println(it.output) }
+
     private
     fun runnerFor(projectDir: File, vararg arguments: String): GradleRunner =
         GradleRunner.create()
@@ -38,7 +46,7 @@ abstract class AbstractTestKitTest(private val gradleVersion: String) {
             .withProjectDir(projectDir)
             .withArguments(*(linkedSetOf("-s") + arguments).toTypedArray())
 
-    protected
+    private
     fun BuildResult.outcomeOf(path: String) =
         task(path)?.outcome
 
