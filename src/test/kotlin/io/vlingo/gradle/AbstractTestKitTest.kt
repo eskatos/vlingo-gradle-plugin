@@ -2,17 +2,17 @@ package io.vlingo.gradle
 
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
+import org.gradle.testkit.runner.TaskOutcome
+
+import org.hamcrest.CoreMatchers.equalTo
+import org.junit.Assert.assertThat
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
+
 import java.io.File
 
 
-abstract class AbstractTestKitTest(
-
-        private
-        val gradleVersion: String
-
-) {
+abstract class AbstractTestKitTest(private val gradleVersion: String) {
 
     @Rule
     @JvmField
@@ -27,11 +27,23 @@ abstract class AbstractTestKitTest(
             build(root, *arguments);
 
     protected
-    fun build(projectDir: File, vararg arguments: String): BuildResult =
+    open fun build(projectDir: File, vararg arguments: String): BuildResult =
+            runnerFor(projectDir, *arguments).build().also { println(it.output) }
+
+    private
+    fun runnerFor(projectDir: File, vararg arguments: String): GradleRunner =
             GradleRunner.create()
                     .withGradleVersion(gradleVersion)
                     .withPluginClasspath()
                     .withProjectDir(projectDir)
-                    .withArguments(*arguments)
-                    .build()
+                    .withArguments(*(linkedSetOf("-s") + arguments).toTypedArray())
+
+    protected
+    fun BuildResult.outcomeOf(path: String) =
+            task(path)?.outcome
+
+    protected
+    fun BuildResult.assertTask(path: String, outcome: TaskOutcome) {
+        assertThat(outcomeOf(path), equalTo(outcome))
+    }
 }
