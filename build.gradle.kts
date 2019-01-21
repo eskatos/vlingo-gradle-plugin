@@ -24,7 +24,3 @@ dependencies {
     testImplementation("junit:junit:4.12")
     testImplementation("org.apache.commons:commons-io:1.3.2")
 }
-
-tasks.test {
-    inputs.dir("src/test/samples")
-}
