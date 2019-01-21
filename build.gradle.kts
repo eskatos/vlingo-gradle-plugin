@@ -2,6 +2,7 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent
 
 plugins {
     `kotlin-dsl`
+    id("org.gradle.kotlin-dsl.ktlint-convention") version "0.2.3"
 }
 
 group = "io.vlingo"
@@ -12,7 +13,7 @@ kotlinDslPluginOptions {
 }
 
 repositories {
-    mavenCentral()
+    gradlePluginPortal()
 }
 
 dependencies {
