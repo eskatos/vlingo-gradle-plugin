@@ -23,11 +23,7 @@ class AndroidTest : AbstractTestKitTest(GradleVersion.current().version) {
         File("src/test/resources/android").copyRecursively(root)
         copyActorProtocolsMainTo(Lang.JAVA, root.resolve("app"))
         root.resolve("settings.gradle").apply {
-            writeText(readText() + "\n" + """
-                // TODO REMOVE ME
-                includeBuild("/Users/paul/src/vlingo-related/vlingo-common")
-                includeBuild("/Users/paul/src/vlingo-related/vlingo-actors")
-            """.trimIndent())
+            writeText(readText() + "\n" + includeVlingoModulesBuild)
         }
         root.resolve("app/build.gradle").apply {
             writeText(
@@ -44,8 +40,6 @@ class AndroidTest : AbstractTestKitTest(GradleVersion.current().version) {
                     """.trimIndent()
             )
         }
-
-        root.walk().forEach(::println)
 
         buildAndFail("testDebugUnitTest").apply {
             assertThat(output, containsString("> io.vlingo.codegen doesn't support Android projects"))

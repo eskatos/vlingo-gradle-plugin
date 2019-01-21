@@ -57,9 +57,7 @@ class CrossJvmLanguageTest(private val parameters: P) : AbstractTestKitTest(para
                 }
             }
 
-            // TODO REMOVE ME
-            includeBuild("/Users/paul/src/vlingo-related/vlingo-common")
-            includeBuild("/Users/paul/src/vlingo-related/vlingo-actors")
+            $includeVlingoModulesBuild
         """.trimIndent())
         locationA.resolve("build.gradle").writeText("""
 

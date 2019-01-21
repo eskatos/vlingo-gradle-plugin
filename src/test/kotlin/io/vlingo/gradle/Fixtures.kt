@@ -29,3 +29,11 @@ fun copyActorProtocolsTestTo(lang: Lang, projectDir: File) =
             )
         }
     }
+
+
+// TODO Remove this once a usable vlingo version is published
+internal
+val includeVlingoModulesBuild = """
+    includeBuild("${File("../vlingo-common").canonicalPath}")
+    includeBuild("${File("../vlingo-actors").canonicalPath}")
+""".trimIndent()
