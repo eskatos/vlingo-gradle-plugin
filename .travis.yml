@@ -1,0 +1,21 @@
+language: java
+
+env:
+  - CI=true
+
+matrix:
+  include:
+    - os: linux
+      sudo: required
+      jdk: openjdk8
+
+script: ./gradlew check --continue --stacktrace --console=plain --scan
+
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+
+cache:
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
