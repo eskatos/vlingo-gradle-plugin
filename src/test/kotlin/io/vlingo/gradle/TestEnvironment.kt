@@ -1,16 +1,16 @@
 package io.vlingo.gradle
 
-import org.gradle.util.GradleVersion
-
 
 val quickTest: Boolean
-    get() = System.getProperty("quickTest")?.toBoolean() ?: false
+    get() = System.getProperty("quickTest") == "true"
 
 
 val supportedGradleVersions =
-        if (quickTest) listOf(GradleVersion.current().version)
+        if (quickTest) listOf(
+                "5.1.1",
+                "5.0"
+        )
         else listOf(
-                "5.1.1" /*,
-                "5.1",
-                "5.0"*/
+                "5.1.1",
+                "5.0"
         )

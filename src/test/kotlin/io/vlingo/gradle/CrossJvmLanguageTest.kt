@@ -23,6 +23,12 @@ enum class Lang {
     val pluginRequest: String
         get() = if (this == KOTLIN) """id("org.jetbrains.kotlin.jvm") version "1.3.11""""
         else """id("$dirName")"""
+
+    companion object {
+        val testedLanguages: List<Lang>
+            get() = if (quickTest) listOf(Lang.JAVA)
+            else Lang.values().toList()
+    }
 }
 
 
@@ -75,8 +81,8 @@ class CrossJvmLanguageTest(
         @Parameterized.Parameters(name = "{0}")
         fun getTestParameters() = sequence {
             supportedGradleVersions.forEach { gradleVersion ->
-                Lang.values().forEach { mainLang ->
-                    Lang.values().forEach { testLang ->
+                Lang.testedLanguages.forEach { mainLang ->
+                    Lang.testedLanguages.forEach { testLang ->
                         yield(Params(
                                 gradleVersion,
                                 mainLang,
