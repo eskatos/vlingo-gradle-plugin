@@ -39,6 +39,7 @@ open class ActorProxyGeneratorTask @Inject constructor(
         val protocols = actorProtocols.get()
         if (protocols.isNotEmpty()) {
 
+            // TODO:performance let ProxyGenerator accept a ClassLoader, remove classPath from the spec and use current loader in the work
             val spec = ActorProxyGeneratorSpec(
                     classpath.files,
                     protocols,
