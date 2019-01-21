@@ -31,17 +31,17 @@ val v4_9 = GradleVersion.version("4.9")
 
 private
 val hasConfigurationAvoidanceSupport =
-        GradleVersion.current() >= v4_9
+    GradleVersion.current() >= v4_9
 
 
 internal
 val hasObjectFactoryPropertyFactories =
-        GradleVersion.current() >= v5_0
+    GradleVersion.current() >= v5_0
 
 
 private
 val hasSourceSetContainerExtension =
-        GradleVersion.current() >= v4_10
+    GradleVersion.current() >= v4_10
 
 
 internal
@@ -53,46 +53,46 @@ val Project.sourceSets: NamedDomainObjectContainer<SourceSet>
 
 internal
 fun <T : Any> NamedDomainObjectContainer<T>.configureEachCompatible(block: T.() -> Unit) =
-        if (hasConfigurationAvoidanceSupport) configureEach(block)
-        else all(block)
+    if (hasConfigurationAvoidanceSupport) configureEach(block)
+    else all(block)
 
 
 internal
 fun <T : Task> TaskContainer.registerCompatible(name: String, type: KClass<T>, block: T.() -> Unit): TaskProviderCompatible<T> =
-        if (hasConfigurationAvoidanceSupport) taskProviderCompatibleFor(register(name, type.java, block))
-        else taskProviderCompatibleFor(create(name, type.java, block))
+    if (hasConfigurationAvoidanceSupport) taskProviderCompatibleFor(register(name, type.java, block))
+    else taskProviderCompatibleFor(create(name, type.java, block))
 
 
 internal
 fun TaskContainer.namedCompatible(name: String): TaskProviderCompatible<Task> =
-        if (hasConfigurationAvoidanceSupport) taskProviderCompatibleFor(named(name))
-        else taskProviderCompatibleFor(getByName(name))
+    if (hasConfigurationAvoidanceSupport) taskProviderCompatibleFor(named(name))
+    else taskProviderCompatibleFor(getByName(name))
 
 
 private
 fun <T : Task> taskProviderCompatibleFor(provider: TaskProvider<T>) =
-        TaskProviderCompatible<T>({ provider.get() }, { provider.configure(it) })
+    TaskProviderCompatible<T>({ provider.get() }, { provider.configure(it) })
 
 
 private
 fun <T : Task> taskProviderCompatibleFor(task: T) =
-        TaskProviderCompatible<T>({ task }, { task.apply(it) })
+    TaskProviderCompatible<T>({ task }, { task.apply(it) })
 
 
 internal
 class TaskProviderCompatible<T : Task>(
 
-        private
-        val provide: () -> T,
+    private
+    val provide: () -> T,
 
-        private
-        val apply: (T.() -> Unit) -> Unit
+    private
+    val apply: (T.() -> Unit) -> Unit
 
 ) : Callable<T> {
 
     override fun call(): T =
-            provide()
+        provide()
 
     fun configure(block: T.() -> Unit) =
-            apply(block)
+        apply(block)
 }

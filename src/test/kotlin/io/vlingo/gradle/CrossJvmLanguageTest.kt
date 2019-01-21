@@ -129,23 +129,23 @@ class CrossJvmLanguageTest(private val parameters: P) : AbstractTestKitTest(para
 
     private
     val templatesRoot =
-            File("src/test/resources/protocols")
+        File("src/test/resources/protocols")
 
     private
     fun copyActorProtocolsMainTo(lang: Lang, projectDir: File) =
-            templatesRoot.resolve("main/${lang.dirName}").copyRecursively(
-                    projectDir.resolve("src/main/${lang.dirName}").also(File::mkdirs)
-            )
+        templatesRoot.resolve("main/${lang.dirName}").copyRecursively(
+            projectDir.resolve("src/main/${lang.dirName}").also(File::mkdirs)
+        )
 
     private
     fun copyActorProtocolsTestTo(lang: Lang, projectDir: File) =
-            projectDir.resolve("src/test").let { srcTest ->
-                listOf(lang.dirName, "resources").forEach { subDir ->
-                    templatesRoot.resolve("test/$subDir").copyRecursively(
-                            srcTest.resolve(subDir).also(File::mkdirs)
-                    )
-                }
+        projectDir.resolve("src/test").let { srcTest ->
+            listOf(lang.dirName, "resources").forEach { subDir ->
+                templatesRoot.resolve("test/$subDir").copyRecursively(
+                    srcTest.resolve(subDir).also(File::mkdirs)
+                )
             }
+        }
 
     private
     val Lang.dirName: String

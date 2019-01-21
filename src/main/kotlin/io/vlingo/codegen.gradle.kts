@@ -13,7 +13,11 @@
  */
 package io.vlingo
 
-import io.vlingo.gradle.*
+import io.vlingo.gradle.ActorProxyGeneratorTask
+import io.vlingo.gradle.configureEachCompatible
+import io.vlingo.gradle.namedCompatible
+import io.vlingo.gradle.registerCompatible
+import io.vlingo.gradle.sourceSets
 
 
 plugins.withType<JavaBasePlugin> {

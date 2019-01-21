@@ -12,25 +12,25 @@ import javax.inject.Inject
 internal
 class ActorProxyGeneratorWork @Inject constructor(
 
-        private
-        val spec: ActorProxyGeneratorSpec
+    private
+    val spec: ActorProxyGeneratorSpec
 
 ) : Runnable {
 
     override fun run(): Unit =
-            try {
-                spec.destinationDir.apply {
-                    takeIf { it.exists() }?.deleteRecursively()
-                    mkdirs()
-                }
-                ProxyGenerator.forClasspath(spec.classPath.toList(), spec.destinationDir, DynaType.Main, true, WorkLogger).use { generator ->
-                    spec.actorProtocols.forEach { protocol ->
-                        generator.generateFor(protocol)
-                    }
-                }
-            } catch (ex: Exception) {
-                throw GradleException("vlingo actor proxies generation failed", ex)
+        try {
+            spec.destinationDir.apply {
+                takeIf { it.exists() }?.deleteRecursively()
+                mkdirs()
             }
+            ProxyGenerator.forClasspath(spec.classPath.toList(), spec.destinationDir, DynaType.Main, true, WorkLogger).use { generator ->
+                spec.actorProtocols.forEach { protocol ->
+                    generator.generateFor(protocol)
+                }
+            }
+        } catch (ex: Exception) {
+            throw GradleException("vlingo actor proxies generation failed", ex)
+        }
 
     object WorkLogger : Logger {
 
@@ -38,14 +38,14 @@ class ActorProxyGeneratorWork @Inject constructor(
         var enabled = true
 
         override fun name(): String =
-                "actor-proxy-generator-work"
+            "actor-proxy-generator-work"
 
         override fun close() {
             enabled = false
         }
 
         override fun isEnabled(): Boolean =
-                enabled
+            enabled
 
         override fun log(message: String) {
             println(message)

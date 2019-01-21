@@ -20,8 +20,8 @@ import javax.inject.Inject
 @CacheableTask
 open class ActorProxyGeneratorTask @Inject constructor(
 
-        private
-        val workerExecutor: WorkerExecutor
+    private
+    val workerExecutor: WorkerExecutor
 
 ) : DefaultTask() {
 
@@ -43,9 +43,9 @@ open class ActorProxyGeneratorTask @Inject constructor(
 
             // TODO:performance let ProxyGenerator accept a ClassLoader, remove classPath from the spec and use current loader in the work
             val spec = ActorProxyGeneratorSpec(
-                    classpath.files,
-                    protocols,
-                    destinationDirectory.asFile.get()
+                classpath.files,
+                protocols,
+                destinationDirectory.asFile.get()
             )
 
             workerExecutor.submit(ActorProxyGeneratorWork::class) {
@@ -53,7 +53,6 @@ open class ActorProxyGeneratorTask @Inject constructor(
                 classpath = this@ActorProxyGeneratorTask.classpath.files
                 params(spec)
             }
-
         } else {
             didWork = false
         }
@@ -61,6 +60,6 @@ open class ActorProxyGeneratorTask @Inject constructor(
 
     private
     fun directoryPropertyCompatible(): DirectoryProperty =
-            if (hasObjectFactoryPropertyFactories) project.objects.directoryProperty()
-            else newOutputDirectory()
+        if (hasObjectFactoryPropertyFactories) project.objects.directoryProperty()
+        else newOutputDirectory()
 }

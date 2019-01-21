@@ -24,23 +24,23 @@ abstract class AbstractTestKitTest(private val gradleVersion: String) {
 
     protected
     fun build(vararg arguments: String): BuildResult =
-            build(root, *arguments);
+        build(root, *arguments)
 
     protected
     open fun build(projectDir: File, vararg arguments: String): BuildResult =
-            runnerFor(projectDir, *arguments).build().also { println(it.output) }
+        runnerFor(projectDir, *arguments).build().also { println(it.output) }
 
     private
     fun runnerFor(projectDir: File, vararg arguments: String): GradleRunner =
-            GradleRunner.create()
-                    .withGradleVersion(gradleVersion)
-                    .withPluginClasspath()
-                    .withProjectDir(projectDir)
-                    .withArguments(*(linkedSetOf("-s") + arguments).toTypedArray())
+        GradleRunner.create()
+            .withGradleVersion(gradleVersion)
+            .withPluginClasspath()
+            .withProjectDir(projectDir)
+            .withArguments(*(linkedSetOf("-s") + arguments).toTypedArray())
 
     protected
     fun BuildResult.outcomeOf(path: String) =
-            task(path)?.outcome
+        task(path)?.outcome
 
     protected
     fun BuildResult.assertTask(path: String, outcome: TaskOutcome) {
