@@ -1,6 +1,5 @@
 package io.vlingo.gradle
 
-import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.Classpath
 import org.gradle.api.tasks.Input
@@ -22,7 +21,7 @@ open class ActorProxyGeneratorTask @Inject constructor(
         private
         val workerExecutor: WorkerExecutor
 
-) : DefaultTask() {
+) : DefaultTaskCompatible() {
 
     @Classpath
     val classpath = project.files()
@@ -32,9 +31,7 @@ open class ActorProxyGeneratorTask @Inject constructor(
 
     @OutputDirectory
     @PathSensitive(PathSensitivity.RELATIVE)
-    val destinationDirectory =
-            if (isGradleFiveDotZeroOrGreater) project.objects.directoryProperty()
-            else newOutputDirectory()
+    val destinationDirectory = directoryPropertyCompatible()
 
     @TaskAction
     @Suppress("unused")
