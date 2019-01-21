@@ -28,11 +28,13 @@ open class ActorProxyGeneratorTask @Inject constructor(
     val classpath = project.files()
 
     @Input
-    val actorProtocols = project.objects.setProperty(String::class.java).empty()
+    val actorProtocols = project.objects.setProperty(String::class.java).also { it.set(emptySet()) }
 
     @OutputDirectory
     @PathSensitive(PathSensitivity.RELATIVE)
-    val destinationDirectory = project.objects.directoryProperty()
+    val destinationDirectory =
+            if (isGradleFiveDotZeroOrGreater) project.objects.directoryProperty()
+            else newOutputDirectory()
 
     @TaskAction
     @Suppress("unused")
