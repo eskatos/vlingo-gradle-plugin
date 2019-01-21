@@ -18,7 +18,7 @@ class Test2ProtocolActor extends Actor with Test2Protocol {
     override def somethingRatherWonderful(test1: Test1Protocol): Unit = {
         test1.doSomethingElseWith(1)
         test1.doSomethingWith("testing", List("one", "two", "three").asJava)
-        Test2ProtocolActor.somethingRatherWonderful = "somethingRatherWonderful: " + Test1ProtocolActor.doSomethingElseWithValue + Test1ProtocolActor.doSomethingWith
+        Test2ProtocolActor.somethingRatherWonderful = "somethingRatherWonderful: " + Test1ProtocolActor.getDoSomethingElseWithValue() + Test1ProtocolActor.getDoSomethingWith()
     }
 }
 

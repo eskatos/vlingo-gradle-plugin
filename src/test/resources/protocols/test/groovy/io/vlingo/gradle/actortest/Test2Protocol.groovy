@@ -1,4 +1,4 @@
-package io.vlingo.gradle.actortest;
+package io.vlingo.gradle.actortest
 
 interface Test2Protocol {
     void doOneThing()

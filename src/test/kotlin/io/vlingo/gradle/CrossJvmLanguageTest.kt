@@ -52,6 +52,16 @@ data class Params(
 }
 
 
+/**
+ * Assert plugin behavior across JVM languages.
+ *
+ * One protocol actor in the `main` source set.
+ * Another protocol actor, using the former, in the `test` source set.
+ *
+ * Test is parameterized with a `main` JVM language and a `test` JVM language.
+ *
+ * @see [Lang]
+ */
 @RunWith(Parameterized::class)
 class CrossJvmLanguageTest(
 
@@ -119,10 +129,10 @@ class CrossJvmLanguageTest(
             }
 
             generateActorProxies {
-                actorProtocols.set([
-                        "io.vlingo.gradle.actortest.Test1Protocol",
-                        "io.vlingo.gradle.actortest.Test2Protocol"
-                ])
+                actorProtocols.set(["io.vlingo.gradle.actortest.Test1Protocol"])
+            }
+            generateTestActorProxies {
+                actorProtocols.set(["io.vlingo.gradle.actortest.Test2Protocol"])
             }
 
         """.trimIndent())
@@ -133,6 +143,8 @@ class CrossJvmLanguageTest(
             println(output)
             assertThat(task(":generateActorProxies")!!.outcome, equalTo(TaskOutcome.SUCCESS))
             assertThat(task(":compileActorProxiesJava")!!.outcome, equalTo(TaskOutcome.SUCCESS))
+            assertThat(task(":generateTestActorProxies")!!.outcome, equalTo(TaskOutcome.SUCCESS))
+            assertThat(task(":compileTestActorProxiesJava")!!.outcome, equalTo(TaskOutcome.SUCCESS))
             assertThat(task(":test")!!.outcome, equalTo(TaskOutcome.SUCCESS))
         }
 
@@ -140,6 +152,8 @@ class CrossJvmLanguageTest(
             println(output)
             assertThat(task(":generateActorProxies")!!.outcome, equalTo(TaskOutcome.UP_TO_DATE))
             assertThat(task(":compileActorProxiesJava")!!.outcome, equalTo(TaskOutcome.UP_TO_DATE))
+            assertThat(task(":generateTestActorProxies")!!.outcome, equalTo(TaskOutcome.UP_TO_DATE))
+            assertThat(task(":compileTestActorProxiesJava")!!.outcome, equalTo(TaskOutcome.UP_TO_DATE))
             assertThat(task(":test")!!.outcome, equalTo(TaskOutcome.UP_TO_DATE))
         }
 
@@ -147,12 +161,16 @@ class CrossJvmLanguageTest(
             println(output)
             assertThat(task(":generateActorProxies")!!.outcome, equalTo(TaskOutcome.FROM_CACHE))
             assertThat(task(":compileActorProxiesJava")!!.outcome, equalTo(TaskOutcome.FROM_CACHE))
+            assertThat(task(":generateTestActorProxies")!!.outcome, equalTo(TaskOutcome.FROM_CACHE))
+            assertThat(task(":compileTestActorProxiesJava")!!.outcome, equalTo(TaskOutcome.FROM_CACHE))
             assertThat(task(":test")!!.outcome, equalTo(TaskOutcome.FROM_CACHE))
         }
 
         build(locationB, "build", "--build-cache", "-s").apply {
             assertThat(task(":generateActorProxies")!!.outcome, equalTo(TaskOutcome.FROM_CACHE))
             assertThat(task(":compileActorProxiesJava")!!.outcome, equalTo(TaskOutcome.FROM_CACHE))
+            assertThat(task(":generateTestActorProxies")!!.outcome, equalTo(TaskOutcome.FROM_CACHE))
+            assertThat(task(":compileTestActorProxiesJava")!!.outcome, equalTo(TaskOutcome.FROM_CACHE))
             assertThat(task(":test")!!.outcome, equalTo(TaskOutcome.FROM_CACHE))
         }
     }

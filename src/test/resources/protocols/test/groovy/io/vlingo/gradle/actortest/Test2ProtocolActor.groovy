@@ -1,6 +1,6 @@
-package io.vlingo.gradle.actortest;
+package io.vlingo.gradle.actortest
 
-import io.vlingo.actors.Actor;
+import io.vlingo.actors.Actor
 
 class Test2ProtocolActor extends Actor implements Test2Protocol {
 
