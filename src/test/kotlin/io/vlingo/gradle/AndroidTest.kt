@@ -27,6 +27,7 @@ class AndroidTest(gradleVersion: String) : AbstractTestKitTest(gradleVersion) {
 
         File("src/test/resources/android").copyRecursively(root)
         copyActorProtocolsMainTo(Lang.JAVA, root.resolve("app"))
+        copyActorProtocolsTestTo(Lang.JAVA, root.resolve("app"))
         root.resolve("app/build.gradle").apply {
             writeText(
                 """
