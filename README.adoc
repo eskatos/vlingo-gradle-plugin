@@ -1,4 +1,4 @@
-= vlingo gradle plugin
+= vlingo gradle plugin image:https://travis-ci.org/eskatos/vlingo-gradle-plugin.svg?branch=master["Build Status", link="https://travis-ci.org/eskatos/vlingo-gradle-plugin"]
 
 Gradle plugin supporting the vlingo platform.
 
