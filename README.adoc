@@ -6,7 +6,7 @@ Gradle plugin supporting the vlingo platform.
 ====
 WORK IN PROGRESS
 
-PLUGIN IS NOT PUBLISHED
+BREAKING CHANGES TO COME
 ====
 
 == Usage
@@ -14,10 +14,10 @@ PLUGIN IS NOT PUBLISHED
 === Targeting the JVM
 
 ```kotlin
-// build.gradle(.kts)
+// build.gradle.kts
 plugins {
     id("java") // or groovy, scala, kotlin
-    id("io.vlingo.codegen") version "0"
+    id("io.vlingo.codegen") version "0.1.0"
 }
 
 dependencies {
@@ -37,10 +37,10 @@ tasks {
 === Targeting Android
 
 ```kotlin
-// app/build.gradle
+// app/build.gradle.kts
 plugins {
     id("com.android.application") version "3.3.0"
-    id("io.vlingo.codegen") version "0"
+    id("io.vlingo.codegen") version "0.1.0"
 }
 
 dependencies {
@@ -67,4 +67,4 @@ The Android support requires Gradle 4.10.1 or greater.
 === Plugin compatibility history
 
     Plugin version | Minimum | Maximum Gradle version
-                 0 |    4.7  | 5.x
+             0.1.0 |    4.7  | 5.x

@@ -11,7 +11,7 @@ plugins {
 }
 
 group = "io.vlingo"
-version = "0"
+version = "0.1.0"
 description = "Gradle plugin supporting the vlingo platform"
 
 val isCI = System.getenv("CI") == "true"
