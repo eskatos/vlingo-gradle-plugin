@@ -1,7 +1,5 @@
 package io.vlingo.gradle
 
-import org.hamcrest.CoreMatchers.containsString
-import org.junit.Assert.assertThat
 import org.junit.Assume.assumeNotNull
 import org.junit.Before
 import org.junit.Test
@@ -41,12 +39,16 @@ class AndroidTest(gradleVersion: String) : AbstractTestKitTest(gradleVersion) {
                         dependencies {
                             implementation("io.vlingo:vlingo-actors:0.8.0")
                         }
+
+                        afterEvaluate {
+                            tasks.getByName("generateDebugActorProxies") {
+                                actorProtocols.set(["io.vlingo.gradle.actortest.Test1Protocol"])
+                            }
+                        }
                     """.trimIndent()
             )
         }
 
-        buildAndFail("testDebugUnitTest").apply {
-            assertThat(output, containsString("> io.vlingo.codegen doesn't support Android projects"))
-        }
+        build("testDebugUnitTest")
     }
 }

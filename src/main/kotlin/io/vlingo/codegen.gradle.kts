@@ -14,10 +14,12 @@
 package io.vlingo
 
 import io.vlingo.gradle.ActorProxyGeneratorTask
+import io.vlingo.gradle.configureEachAndroidVariant
 import io.vlingo.gradle.configureEachCompatible
 import io.vlingo.gradle.namedCompatible
 import io.vlingo.gradle.registerCompatible
 import io.vlingo.gradle.sourceSets
+import io.vlingo.gradle.withAndroidPlugin
 
 
 plugins.withType<JavaBasePlugin> {
@@ -54,8 +56,39 @@ plugins.withType<JavaBasePlugin> {
     }
 }
 
-listOf("com.android.application", "com.android.library", "com.android.test").forEach { android ->
-    plugins.withId(android) {
-        throw GradleException("io.vlingo.codegen doesn't support Android projects")
+
+plugins.withAndroidPlugin {
+
+    configureEachAndroidVariant {
+
+        println("VARIANT $this")
+
+        val variantCompileClasspath = getCompileClasspath(null)
+
+        val codeGenTaskName = "generate${name.capitalize()}ActorProxies"
+        val codeGenDestDir = layout.buildDirectory.dir("generated-sources/$codeGenTaskName/java")
+
+        val codeGenTask = tasks.registerCompatible(codeGenTaskName, ActorProxyGeneratorTask::class) {
+            classpath.from(variantCompileClasspath)
+            destinationDirectory.set(codeGenDestDir)
+        }
+
+        // TODO how to get all languages compilation outputs
+        codeGenTask.configure {
+            classpath.from(javaCompileProvider)
+        }
+
+        val compileTaskName = "compile${name.capitalize()}ActorProxiesJava"
+        val compileDestDir = layout.buildDirectory.dir("classes/$compileTaskName/java")
+
+        val compileTask = tasks.registerCompatible(compileTaskName, JavaCompile::class) {
+            dependsOn(codeGenTask)
+            setSource(codeGenDestDir)
+            // TODO how to get all languages compilation outputs
+            classpath = files(variantCompileClasspath, javaCompileProvider)
+            setDestinationDir(compileDestDir.map { it.asFile })
+        }
+
+        registerPostJavacGeneratedBytecode(files(compileTask))
     }
 }

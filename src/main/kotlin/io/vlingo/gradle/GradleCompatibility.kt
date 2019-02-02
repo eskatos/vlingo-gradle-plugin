@@ -1,5 +1,6 @@
 package io.vlingo.gradle
 
+import org.gradle.api.DomainObjectCollection
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -52,7 +53,7 @@ val Project.sourceSets: NamedDomainObjectContainer<SourceSet>
 
 
 internal
-fun <T : Any> NamedDomainObjectContainer<T>.configureEachCompatible(block: T.() -> Unit) =
+fun <C : DomainObjectCollection<T>, T : Any> C.configureEachCompatible(block: T.() -> Unit) =
     if (hasConfigurationAvoidanceSupport) configureEach(block)
     else all(block)
 
@@ -69,12 +70,12 @@ fun TaskContainer.namedCompatible(name: String): TaskProviderCompatible<Task> =
     else taskProviderCompatibleFor(getByName(name))
 
 
-private
+internal
 fun <T : Task> taskProviderCompatibleFor(provider: TaskProvider<T>) =
     TaskProviderCompatible<T>({ provider.get() }, { provider.configure(it) })
 
 
-private
+internal
 fun <T : Task> taskProviderCompatibleFor(task: T) =
     TaskProviderCompatible<T>({ task }, { task.apply(it) })
 
