@@ -56,8 +56,6 @@ class CrossJvmLanguageTest(private val parameters: P) : AbstractTestKitTest(para
                     directory = file("../build-cache-dir")
                 }
             }
-
-            $includeVlingoModulesBuild
         """.trimIndent())
         locationA.resolve("build.gradle").writeText("""
 

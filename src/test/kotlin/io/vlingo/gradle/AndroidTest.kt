@@ -22,9 +22,6 @@ class AndroidTest : AbstractTestKitTest(GradleVersion.current().version) {
 
         File("src/test/resources/android").copyRecursively(root)
         copyActorProtocolsMainTo(Lang.JAVA, root.resolve("app"))
-        root.resolve("settings.gradle").apply {
-            writeText(readText() + "\n" + includeVlingoModulesBuild)
-        }
         root.resolve("app/build.gradle").apply {
             writeText(
                 """
