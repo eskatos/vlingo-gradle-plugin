@@ -1,8 +1,11 @@
 import org.gradle.api.tasks.testing.logging.TestLogEvent
+import org.gradle.plugins.ide.idea.model.IdeaProject
+import org.jetbrains.gradle.ext.*
 
 plugins {
     `kotlin-dsl`
     id("org.gradle.kotlin-dsl.ktlint-convention") version "0.2.3"
+    id("org.jetbrains.gradle.plugin.idea-ext") version "0.5"
 }
 
 group = "io.vlingo"
@@ -32,3 +35,25 @@ tasks.test {
     testLogging.events(TestLogEvent.PASSED, TestLogEvent.FAILED, TestLogEvent.SKIPPED)
     systemProperty("quickTest", System.getenv("CI") != "true")
 }
+
+idea {
+    project {
+        settings {
+            delegateActions {
+                delegateBuildRunToGradle = true
+                testRunner = ActionDelegationConfig.TestRunner.GRADLE
+            }
+            doNotDetectFrameworks("android")
+        }
+    }
+}
+
+
+// -- Kotlin extensions required because of lack of accessors in gradle-kotlin-dsl
+// -- for Gradle extensions on properties of project Gradle extensions
+
+fun IdeaProject.settings(block: ProjectSettings.() -> Unit): Unit =
+    (this as ExtensionAware).configure(block)
+
+fun ProjectSettings.delegateActions(block: ActionDelegationConfig.() -> Unit): Unit =
+    (this as ExtensionAware).configure(block)
