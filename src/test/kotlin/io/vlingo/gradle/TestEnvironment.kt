@@ -19,6 +19,17 @@ val testedGradleVersions =
         "4.7"
     )
 
+val testedGradleVersionsWithAndroid =
+    if (quickTest) listOf(
+        "5.1.1",
+        "4.10.1"
+    )
+    else listOf(
+        "5.1",
+        "5.0",
+        "4.10.1"
+    )
+
 
 val testedLanguages =
     if (quickTest) listOf(Lang.JAVA, Lang.KOTLIN)
