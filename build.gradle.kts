@@ -6,6 +6,7 @@ plugins {
     `build-scan`
     `kotlin-dsl`
     `maven-publish`
+    id("com.gradle.plugin-publish") version "0.10.1"
     id("org.gradle.kotlin-dsl.ktlint-convention") version "0.2.3"
     id("org.jetbrains.gradle.plugin.idea-ext") version "0.5"
 }
@@ -13,6 +14,18 @@ plugins {
 group = "io.vlingo"
 version = "0.1.0"
 description = "Gradle plugin supporting the vlingo platform"
+
+pluginBundle {
+    website = "https://github.com/eskatos/vlingo-gradle-plugin"
+    vcsUrl = "https://github.com/eskatos/vlingo-gradle-plugin"
+    description = project.description
+    tags = listOf("vlingo")
+    plugins {
+        named("io.vlingo.codegen") {
+            displayName = "vlingo actor protocol code generation"
+        }
+    }
+}
 
 val isCI = System.getenv("CI") == "true"
 
