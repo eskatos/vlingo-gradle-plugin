@@ -3,6 +3,7 @@ import org.gradle.plugins.ide.idea.model.IdeaProject
 import org.jetbrains.gradle.ext.*
 
 plugins {
+    `build-scan`
     `kotlin-dsl`
     id("org.gradle.kotlin-dsl.ktlint-convention") version "0.2.3"
     id("org.jetbrains.gradle.plugin.idea-ext") version "0.5"
@@ -10,6 +11,8 @@ plugins {
 
 group = "io.vlingo"
 version = "0"
+
+val isCI = System.getenv("CI") == "true"
 
 kotlinDslPluginOptions {
     experimentalWarning.set(false)
@@ -36,7 +39,7 @@ dependencies {
 
 tasks.test {
     testLogging.events(TestLogEvent.PASSED, TestLogEvent.FAILED, TestLogEvent.SKIPPED)
-    systemProperty("quickTest", System.getenv("CI") != "true")
+    systemProperty("quickTest", !isCI)
 }
 
 idea {
@@ -48,6 +51,14 @@ idea {
             }
             doNotDetectFrameworks("android")
         }
+    }
+}
+
+if (isCI) {
+    buildScan {
+        termsOfServiceUrl = "https://gradle.com/terms-of-service"
+        termsOfServiceAgree = "yes"
+        tag("CI")
     }
 }
 
