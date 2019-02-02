@@ -19,6 +19,7 @@ val testedGradleVersions =
         "4.7"
     )
 
+
 val testedGradleVersionsWithAndroid =
     if (quickTest) listOf(
         "5.1.1",
