@@ -41,7 +41,7 @@ plugins.withType<JavaBasePlugin> {
         }
 
         val compileTaskName = getTaskName("compile", "actorProxiesJava")
-        val compileDestDir = layout.buildDirectory.dir("classes/$codeGenTaskName/java/")
+        val compileDestDir = layout.buildDirectory.dir("classes/$compileTaskName/java/")
 
         val compileTask = tasks.registerCompatible(compileTaskName, JavaCompile::class) {
             dependsOn(codeGenTask)
