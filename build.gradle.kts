@@ -5,12 +5,14 @@ import org.jetbrains.gradle.ext.*
 plugins {
     `build-scan`
     `kotlin-dsl`
+    `maven-publish`
     id("org.gradle.kotlin-dsl.ktlint-convention") version "0.2.3"
     id("org.jetbrains.gradle.plugin.idea-ext") version "0.5"
 }
 
 group = "io.vlingo"
 version = "0"
+description = "Gradle plugin supporting the vlingo platform"
 
 val isCI = System.getenv("CI") == "true"
 
@@ -59,6 +61,22 @@ if (isCI) {
         termsOfServiceUrl = "https://gradle.com/terms-of-service"
         termsOfServiceAgree = "yes"
         tag("CI")
+    }
+}
+
+val sourcesJar by tasks.registering(Jar::class) {
+    group = JavaBasePlugin.DOCUMENTATION_GROUP
+    description = "Assembles sources JAR"
+    archiveClassifier.set("sources")
+    from(sourceSets.main.map { it.allSource })
+    from(layout.buildDirectory.dir("generated-sources/kotlin-dsl-plugins/kotlin"))
+}
+
+publishing {
+    publications {
+        register<MavenPublication>("pluginMaven") {
+            artifact(sourcesJar.get())
+        }
     }
 }
 
