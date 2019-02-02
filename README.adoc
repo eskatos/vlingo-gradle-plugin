@@ -7,29 +7,64 @@ Gradle plugin supporting the vlingo platform.
 WORK IN PROGRESS
 
 PLUGIN IS NOT PUBLISHED
-
-PLUGIN DEPENDS ON UNPUBLISHED vlingo ARTIFACTS
 ====
 
+== Usage
+
+=== Targeting the JVM
+
 ```kotlin
+// build.gradle(.kts)
 plugins {
     id("java") // or groovy, scala, kotlin
-    id("io.vlingo.codegen")
+    id("io.vlingo.codegen") version "0"
 }
 
-tasks.generateActorProxies {
-    actorProtocols.set([
-        "io.vlingo.gradle.actortest.Test1Protocol",
-        "io.vlingo.gradle.actortest.Test2Protocol"
-    ])
+dependencies {
+    implementation("io.vlingo:vlingo-actors:0.8.0")
 }
+
+tasks {
+    generateActorProxies {
+        actorProtocols.set(listOf(
+            "io.vlingo.gradle.actortest.Test1Protocol",
+            "io.vlingo.gradle.actortest.Test2Protocol"
+        ))
+    }
+}
+```
+
+=== Targeting Android
+
+```kotlin
+// app/build.gradle
+plugins {
+    id("com.android.application") version "3.3.0"
+    id("io.vlingo.codegen") version "0"
+}
+
+dependencies {
+    implementation("io.vlingo:vlingo-actors:0.8.0")
+}
+
+afterEvaluate {
+    tasks.getByName("generateDebugActorProxies") {
+        actorProtocols.set(listOf(
+            "io.vlingo.gradle.actortest.Test1Protocol",
+            "io.vlingo.gradle.actortest.Test2Protocol"
+        ))
+    }
+}
+
 ```
 
 == Compatibility
 
-The plugin requires Java 8 or greater and Gradle 4.7 or greater or Gradle 5.x.
+The plugin requires Java 8 or greater and Gradle 4.7 or greater.
+
+The Android support requires Gradle 4.10.1 or greater.
 
 === Plugin compatibility history
 
     Plugin version | Minimum | Maximum Gradle version
-             0.1.0 |    4.7  | 5.x
+                 0 |    4.7  | 5.x
