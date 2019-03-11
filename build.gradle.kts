@@ -27,6 +27,7 @@ pluginBundle {
     }
 }
 
+val vlingoVersion = "0.8.2"
 val isCI = System.getenv("CI") == "true"
 
 kotlinDslPluginOptions {
@@ -40,8 +41,8 @@ repositories {
 
 dependencies {
 
-    compileOnly("io.vlingo:vlingo-actors:0.8.0")
-    compileOnly("io.vlingo:vlingo-common:0.8.0")
+    compileOnly("io.vlingo:vlingo-actors:$vlingoVersion")
+    compileOnly("io.vlingo:vlingo-common:$vlingoVersion")
 
     compileOnly("com.android.tools.build:gradle:3.3.0")
 
