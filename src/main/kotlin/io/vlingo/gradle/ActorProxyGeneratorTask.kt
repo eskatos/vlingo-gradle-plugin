@@ -38,6 +38,10 @@ open class ActorProxyGeneratorTask @Inject constructor(
     @TaskAction
     @Suppress("unused")
     fun generateActorProxies() {
+        val destinationDir = destinationDirectory.asFile.get().apply {
+            deleteRecursively()
+            mkdirs()
+        }
         val protocols = actorProtocols.get()
         if (protocols.isNotEmpty()) {
 
@@ -45,7 +49,7 @@ open class ActorProxyGeneratorTask @Inject constructor(
             val spec = ActorProxyGeneratorSpec(
                 classpath.files,
                 protocols,
-                destinationDirectory.asFile.get()
+                destinationDir
             )
 
             workerExecutor.submit(ActorProxyGeneratorWork::class) {
