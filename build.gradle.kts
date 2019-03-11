@@ -12,7 +12,7 @@ plugins {
 }
 
 group = "io.vlingo"
-version = "0.2.0-SNAPSHOT"
+version = "0.1.1"
 description = "Gradle plugin supporting the vlingo platform"
 
 pluginBundle {
